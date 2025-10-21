@@ -11,7 +11,11 @@ def find_spans(text: str, pattern: str):
     spans = []
 
     # ToDo 1: Copy your solution from the last exercise
-
+    if not pattern or len(pattern) > len(text):
+        return spans
+    for i in range(len(text) - len(pattern) + 1):  # Find a pattern at index
+        if text[i:i + len(pattern)] == pattern:
+            spans.append((i, i + len(pattern)))  # Add a tuple for it
     return spans
 
 
@@ -78,8 +82,27 @@ def combine_results(result1, result2):
     #         - the spans in the title and
     #         - the spans found in the individual lines
     #  Returned the combined search result
-    combined = result1
+    combined = dict(result1)
+    combined["matches"] = result1["matches"] + result2["matches"]
+    combined["title_spans"] = result1["title_spans"] + result2["title_spans"]
 
+    lines_by_no = {}
+    for l_match in result1["line_matches"]:
+        line_no = l_match["line_no"]
+        lines_by_no[line_no] = l_match
+
+    for l_match in result2["line_matches"]:
+        line_no = l_match["line_no"]
+        if line_no in lines_by_no:
+            already_spans = lines_by_no[line_no]["spans"]
+            new_spans = l_match["spans"]
+            merged_spans = already_spans + new_spans
+            merged_spans.sort()
+            lines_by_no[line_no]["spans"] = merged_spans
+        else:
+            lines_by_no[line_no] = l_match
+
+    combined["line_matches"] = list(lines_by_no.values())
     return combined
 
 
@@ -119,7 +142,8 @@ def main() -> None:
         combined_results = []
 
         #  ToDo 2) Split the raw input string into words using a built-in method of string
-        words = raw #  ... your code here ...
+        words = raw.split() #  ... your code here ...
+
 
         for word in words:
             # Searching for the word in all sonnets
