@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Part 2 starter CLI (students complete manual substring search + highlighting)."""
 from typing import List, Dict, Tuple
-from .constants import BANNER, HELP
-from .sonnets import SONNETS
+from constants import BANNER, HELP
+from sonnets import SONNETS
 
 def find_spans(text: str, pattern: str):
     """Return [(start, end), ...] for all (possibly overlapping) matches.
